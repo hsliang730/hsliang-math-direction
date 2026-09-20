@@ -15,7 +15,6 @@
             --accent-blue: #2997ff;
             --accent-purple: #bf5af2;
             --accent-orange: #ff9f0a;
-            --apple-glass: rgba(255, 255, 255, 0.05);
         }
 
         * {
@@ -33,10 +32,28 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
-        /* 導覽列 */
+        /* --- 1. 背景環境光動畫 --- */
+        .bg-glow {
+            position: fixed;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(41, 151, 255, 0.12) 0%, rgba(191, 90, 242, 0.08) 40%, rgba(0, 0, 0, 0) 70%);
+            z-index: 0;
+            pointer-events: none;
+            animation: pulseGlow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: translateX(-50%) scale(0.9); opacity: 0.5; }
+            100% { transform: translateX(-50%) scale(1.15); opacity: 0.9; }
+        }
+
+        /* --- 2. 導覽列 --- */
         nav {
             position: fixed;
             top: 0;
@@ -45,7 +62,7 @@
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            z-index: 9999;
+            z-index: 100;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             justify-content: center;
@@ -73,9 +90,16 @@
             gap: 6px;
         }
 
-        /* Hero 區塊 */
+        /* --- 3. Hero 區塊與進場動畫 --- */
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
         .hero {
-            padding-top: 120px;
+            position: relative;
+            z-index: 1;
+            padding-top: 140px;
             padding-bottom: 60px;
             text-align: center;
             max-width: 980px;
@@ -84,56 +108,60 @@
             padding-right: 20px;
         }
 
+        .animate-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.5s; }
+        .delay-5 { animation-delay: 0.6s; }
+
         .hero-tag {
             font-size: 14px;
             font-weight: 600;
             color: var(--accent-orange);
             letter-spacing: 0.02em;
-            margin-bottom: 8px;
-            text-transform: uppercase;
+            margin-bottom: 12px;
         }
 
         .hero-title {
             font-size: 56px;
             font-weight: 700;
             letter-spacing: -0.015em;
-            line-height: 1.07143;
-            margin-bottom: 12px;
+            line-height: 1.1;
+            margin-bottom: 16px;
             background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero-subtitle {
-            font-size: 24px;
-            font-weight: 400;
+            font-size: 22px;
             color: var(--text-secondary);
-            letter-spacing: 0.007em;
-            max-width: 600px;
+            max-width: 620px;
             margin: 0 auto;
-            line-height: 1.33337;
+            line-height: 1.4;
         }
 
-        /* Bento Grid 佈局 */
+        /* --- 4. Bento Grid 卡片與懸浮動畫 --- */
         .grid-container {
+            position: relative;
+            z-index: 1;
             max-width: 980px;
             margin: 0 auto 80px auto;
             padding: 0 20px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 24px;
+            flex-grow: 1;
         }
 
         @media (max-width: 768px) {
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-            .hero-title {
-                font-size: 40px;
-            }
-            .hero-subtitle {
-                font-size: 19px;
-            }
+            .grid-container { grid-template-columns: 1fr; }
+            .hero-title { font-size: 38px; }
+            .hero-subtitle { font-size: 18px; }
         }
 
         .bento-card {
@@ -149,17 +177,13 @@
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            min-height: 480px;
+            min-height: 460px;
         }
 
         .bento-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-        }
-
-        .card-header {
-            z-index: 2;
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
         .card-category {
@@ -169,32 +193,49 @@
             letter-spacing: 0.08em;
             margin-bottom: 8px;
         }
+        .system-card .card-category { color: var(--accent-blue); }
+        .timer-card .card-category { color: var(--accent-purple); }
 
         .card-title {
             font-size: 28px;
             font-weight: 600;
-            letter-spacing: -0.01em;
             margin-bottom: 12px;
-            line-height: 1.2;
         }
 
         .card-desc {
             font-size: 15px;
             color: var(--text-secondary);
-            line-height: 1.46667;
+            line-height: 1.5;
             margin-bottom: 24px;
         }
 
+        /* 預覽小圖案 */
+        .preview-box {
+            position: relative;
+            width: 100%;
+            height: 160px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: auto;
+            margin-bottom: 24px;
+        }
+        .system-card .preview-box { background: radial-gradient(circle, rgba(41, 151, 255, 0.15), rgba(0,0,0,0.4)); }
+        .timer-card .preview-box { background: radial-gradient(circle, rgba(191, 90, 242, 0.15), rgba(0,0,0,0.4)); }
+
+        .icon-large { font-size: 48px; color: rgba(255,255,255,0.8); }
+
+        /* 按鈕群組 */
         .card-actions {
             display: flex;
             gap: 12px;
-            align-items: center;
-            z-index: 2;
+            flex-wrap: wrap;
         }
 
-        .btn-primary {
-            background: #ffffff;
-            color: #000000;
+        .btn {
             font-size: 14px;
             font-weight: 500;
             padding: 10px 20px;
@@ -202,77 +243,93 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
         }
 
-        .btn-primary:hover {
-            background: #e8e8ed;
-            transform: scale(1.02);
-        }
+        .btn-primary { background: #ffffff; color: #000000; }
+        .btn-primary:hover { background: #e8e8ed; transform: scale(1.03); }
 
-        /* Preview UI Block */
-        .preview-box {
-            position: relative;
-            width: 100%;
-            height: 200px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            overflow: hidden;
-            margin-top: auto;
-            z-index: 1;
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.03); }
+
+        /* --- 5. 互動預覽彈窗 (Modal) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 99999;
             display: flex;
             flex-direction: column;
+            align-items: center;
             justify-content: center;
-            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
-        /* 系統圖卡專屬色彩 */
-        .system-card .card-category { color: var(--accent-blue); }
-        .system-card .preview-box {
-            background: radial-gradient(circle at 50% 50%, rgba(41, 151, 255, 0.15) 0%, rgba(0, 0, 0, 0.4) 100%);
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
         }
 
-        .timer-card .card-category { color: var(--accent-purple); }
-        .timer-card .preview-box {
-            background: radial-gradient(circle at 50% 50%, rgba(191, 90, 242, 0.15) 0%, rgba(0, 0, 0, 0.4) 100%);
-        }
-
-        .timer-digits {
-            font-size: 42px;
-            font-weight: 700;
-            font-monospaced: digits;
-            letter-spacing: 2px;
-            background: linear-gradient(180deg, #fff, #a1a1a6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .system-ui-badge {
-            background: rgba(41, 151, 255, 0.2);
-            color: var(--accent-blue);
-            border: 1px solid rgba(41, 151, 255, 0.3);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
+        .modal-header {
+            width: 90%;
+            max-width: 1200px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            margin-bottom: 16px;
         }
 
-        /* Footer */
-        footer {
-            background: #111113;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 30px 20px;
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-secondary);
+        .modal-title { font-size: 18px; font-weight: 600; }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        .close-btn:hover { background: rgba(255, 255, 255, 0.25); }
+
+        .iframe-container {
+            width: 90%;
+            max-width: 1200px;
+            height: 75vh;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active .iframe-container { transform: scale(1); }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
 <body>
+
+    <!-- 背景光暈 -->
+    <div class="bg-glow"></div>
 
     <!-- 導覽列 -->
     <nav>
@@ -287,60 +344,99 @@
 
     <!-- Hero 區塊 -->
     <section class="hero">
-        <div class="hero-tag">重塑數學學習體驗</div>
-        <h1 class="hero-title">hsliang 數學數位學習平台</h1>
-        <p class="hero-subtitle">集結模組化學習管理系統與專業考試計時器，打造極致優雅高效的課堂與自主學習環境。</p>
+        <div class="hero-tag animate-up delay-1">重塑數學學習體驗</div>
+        <h1 class="hero-title animate-up delay-2">hsliang 數學數位學習平台</h1>
+        <p class="hero-subtitle animate-up delay-3">集結模組化學習管理系統與專業考試計時器，打造極致優雅、高效的課堂與自主學習環境。</p>
     </section>
 
     <!-- Bento 卡片區 -->
     <main class="grid-container">
 
-        <!-- 卡片 1: 數學學習系統 -->
-        <div class="bento-card system-card">
-            <div class="card-header">
+        <!-- 1. 數學學習系統 -->
+        <div class="bento-card system-card animate-up delay-4">
+            <div>
                 <div class="card-category">Learning System</div>
                 <h2 class="card-title">數學數位學習系統</h2>
                 <p class="card-desc">整合模組化章節觀念、線上互動題庫與即時學習進度評量，幫助學生建構完整數學思維系統。</p>
             </div>
             
             <div class="preview-box">
-                <div class="system-ui-badge">
-                    <i class="fa-solid fa-graduation-cap"></i> 系統化章節與即時評量
-                </div>
+                <i class="fa-solid fa-laptop-code icon-large"></i>
             </div>
 
-            <div class="card-actions" style="margin-top: 24px;">
-                <a href="https://hsliang-math-system.netlify.app" target="_blank" class="btn-primary">
+            <div class="card-actions">
+                <a href="https://hsliang-math-system.netlify.app" target="_blank" class="btn btn-primary">
                     立即前往 <i class="fa-solid fa-arrow-right"></i>
                 </a>
+                <button class="btn btn-secondary" onclick="openPreview('https://hsliang-math-system.netlify.app', '數學數位學習系統')">
+                    <i class="fa-regular fa-eye"></i> 即時預覽
+                </button>
             </div>
         </div>
 
-        <!-- 卡片 2: 考試倒數計時器 -->
-        <div class="bento-card timer-card">
-            <div class="card-header">
+        <!-- 2. 考試倒數計時器 -->
+        <div class="bento-card timer-card animate-up delay-5">
+            <div>
                 <div class="card-category">Exam Assistant</div>
                 <h2 class="card-title">考試倒數計時器</h2>
                 <p class="card-desc">專為數學測驗與課堂演練設計的大螢幕計時工具，直觀的視覺倒數幫助掌握精準答題節奏。</p>
             </div>
 
             <div class="preview-box">
-                <div class="timer-digits">50:00</div>
+                <i class="fa-solid fa-hourglass-half icon-large"></i>
             </div>
 
-            <div class="card-actions" style="margin-top: 24px;">
-                <a href="https://hsliang-math-exam-timer.netlify.app" target="_blank" class="btn-primary">
+            <div class="card-actions">
+                <a href="https://hsliang-math-exam-timer.netlify.app" target="_blank" class="btn btn-primary">
                     立即前往 <i class="fa-solid fa-arrow-right"></i>
                 </a>
+                <button class="btn btn-secondary" onclick="openPreview('https://hsliang-math-exam-timer.netlify.app', '考試倒數計時器')">
+                    <i class="fa-regular fa-eye"></i> 即時預覽
+                </button>
             </div>
         </div>
 
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <p>© hsliang Math. All rights reserved.</p>
-    </footer>
+    <!-- 即時預覽彈窗 -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal-header">
+            <div class="modal-title" id="modalTitle">預覽視窗</div>
+            <button class="close-btn" onclick="closePreview()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="iframe-container">
+            <iframe id="previewFrame" src="" title="網站預覽"></iframe>
+        </div>
+    </div>
 
+    <!-- 彈窗控制腳本 -->
+    <script>
+        const modal = document.getElementById('previewModal');
+        const frame = document.getElementById('previewFrame');
+        const mTitle = document.getElementById('modalTitle');
+
+        function openPreview(url, title) {
+            mTitle.innerText = "預覽：" + title;
+            frame.src = url;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // 鎖定背景滾動
+        }
+
+        function closePreview() {
+            modal.classList.remove('active');
+            // 延遲清空 src 避免動畫中途消失
+            setTimeout(() => {
+                frame.src = '';
+            }, 300);
+            document.body.style.overflow = ''; // 恢復背景滾動
+        }
+
+        // 點擊背景關閉
+        modal.addEventListener('click', function(e) {
+            if(e.target === modal) closePreview();
+        });
+    </script>
 </body>
 </html>
